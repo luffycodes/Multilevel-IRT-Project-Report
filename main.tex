@@ -1,0 +1,88 @@
+\documentclass[12pt]{article}
+\usepackage{lineno, blindtext,  enumerate, algorithmic }
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{natbib}
+% \usepackage[sorting=none]{biblatex}
+\usepackage{enumitem}
+\renewcommand{\baselinestretch}{1.0}
+% \setlength{\oddsidemargin}{0.0in}
+% \setlength{\evensidemargin}{0.0in}
+% \setlength{\topmargin}{0.0in}
+% \setlength{\textheight}{8.5in}
+% \setlength{\textwidth}{6.5in}
+\usepackage[letterpaper]{geometry}
+\geometry{top=1.0in, bottom=1.0in, left=1.0in, right=1.0in}
+\setlength{\headsep}{0in}
+\setlength{\parindent}{0in}
+\usepackage{setspace}
+\doublespacing
+\newcommand{\utwi}[1]{\mbox{\boldmath $ #1$}}
+\pagestyle{plain}
+\includeonly{}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+% \bibliography{references}
+
+\begin{document}
+
+\begin{center}
+{\bf RICE UNIVERSITY} \\
+STAT 525 \\
+{\it Bayesian Statistics} \\ 
+\vspace{5pt}
+Shashank Sonkar \\
+\vspace{11pt}
+{\bf Project Report}
+\end{center}
+
+\section{Item Response Theory}
+Let us say we are given some questions, and students' responses to these questions (responses are either marked correct or incorrect). Given this information, one of the most important tasks in the field of educational data mining is to predict each question's (also called an item) difficulty and each student's proficiency. Rasch laid the foundation of item response theory (IRT) in around 1960s \cite{rasch1960probabilistic,rasch1966item}. Using Markov Chain Monte Carlo (MCMC) methods, one can estimate the item difficulty and student proficiency parameters.
+
+In this project, I plan to first do a short review of IRT to understand its foundations (e.g., model design like 1PL, 2PL, 3PL models) and sampling methods that are often used to estimate its parameters.
+
+Then, I plan to deep dive into the following paper - Bayesian estimation of a multilevel IRT model using Gibbs sampling \cite{fox2001bayesian}. This paper extends the standard IRT model further by grouping students into schools, and proposing a multilevel regression model to study the properties of second-level groups (e.g. schools, in this case) as well. It adopts a fully Bayesian approach, unlike its predecessors, that provides it benefits like uncertainty quantification, and ease of incorporating information about schools through priors.
+
+Lastly, I plan to implement the model in Stan (implementation of multilevel IRT model is available in MLIRT package in R) and also, test the model performance on a bigger PISA 2003 dataset (authors tested on an older PISA dataset, number of students and schools in PISA 2003 are 3829 and 150 respectively, versus 2156 and 97 in the older dataset).
+
+\section{Main topics to be covered:}
+\begin{enumerate}[label=(\alph*)]
+    \item Understand standard IRT models
+    \item Understand the assumption of homoscedasticity in standard IRT models that the paper tries to alleviate.
+    \item Understand two-Level one-way random effects ANOVA model.
+    \item Study how the above model can be used to model the multilevel extension to the standard IRT model.
+    \item Understand the estimation of multilevel IRT model parameters using Gibbs sampling.
+    \item Implement the model in Stan.
+    \item Run the R and Stan models on PISA 2003 dataset to compare the two implementations, and also test the model's performance on a bigger dataset (since, authors analyzed an older, smaller PISA dataset in the paper).
+\end{enumerate}
+
+% \section{Book Chapters/Papers to Read}
+% \begin{enumerate}[label=(\alph*)]
+%     \item Background: Chapter 2 - Rasch Model, from Handbook of IRT, Vol 1 \cite{van2016handbook}.
+%     \item Background: Chapter 13 - Bayesian Estimation, Chapter 15 - Markov Chain Monte Carlo for Item Response Models from Handbook of IRT, Vol 2 \cite{hambleton2016handbook}.
+%     \item \textbf{Deep dive into the Paper:} Bayesian estimation of a multilevel IRT model using Gibbs sampling \cite{fox2001bayesian}
+% \end{enumerate}
+
+% \section{Kaggle Competition Details}
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+% \printbibliography
+
+% New page for appendix
+% \newpage
+% \section*{Appendix}
+% \emph{Plots and longer (but still edited!) \texttt{R} scripts may be included here.}
+
+\end{document}
+
+
