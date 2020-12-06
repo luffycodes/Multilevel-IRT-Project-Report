@@ -111,10 +111,15 @@ Note that this level captures variance in student abilities within the same scho
 At level 3, let there be $S$ covariates, denoted by $\boldsymbol{w}$.
 
 \begin{equation}
-    \beta_{qj} = \gamma_{0qj} + \gamma_{1qj}w_{1qj} + ... + \gamma_{Sqj}w_{Sqj} + u_{qj},
+    \beta_{qj} = \gamma_{0qj} + \gamma_{1qj}w_{1j} + ... + \gamma_{Sqj}w_{Sj} + u_{qj},
 \end{equation}
 
-for all $q \in [1, Q]$, and for all $ j \in [1, J]$. 
+for all $q \in [1, Q]$, and for all $ j \in [1, J]$. $w_{sj}$, where $s \in [1, S]$, contains the $s^{th}$ property of school $j$. For instance, it can be an integer to model the social, economic, and cultural status of the school. Then, $\gamma_{sqj}$ will explain the influence of the status of the school in relation to the $q^{th}$ property of the learner. For instance, if the $q^{th}$ property denotes if the learner is female or not ($x_{qij}$ is 1 if the $i^{th}$ learner in $j^{th}$ school is female, otherwise 0), one can analyze the importance of status of the school for better learning of the female students.
+
+Note that this level captures variance in student abilities across different schools. Thus, it can explain the contribution of the school on difference in abilities of students.
+
+Also, $e_{ij} \sim \mathcal{N}(0, \sigma^2)$, while $\boldsymbol{u_j} \sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{T})$.
+
 
 \subsection{Identifiability Issues}
 
