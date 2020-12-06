@@ -80,6 +80,14 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
 \section{x-PL IRT Model Specifications}
 
 \section{Multilevel IRT Model Specifications}
+\subsection{Motivation for multilevel IRT model}
+\begin{itemize}
+    \item The assumption of homoscedasticity in standard IRT models
+    \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
+    
+    pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
+\end{itemize}
+
 \subsection{Description of `levels' in multilevel IRT model}
 
 Let learners be indexed by variable $i$, which ranges $1$ to $n_j$, where $j$ represents the index of the school from $1$ to $J$. Let items be indexed by variable $k$, which ranges from $1$ to $K$. Then, the probability that the learner $i$ studying in school $j$ will answer the item $k$ correctly is modeled by:
@@ -112,9 +120,12 @@ for all $q \in [1, Q]$, and for all $ j \in [1, J]$.
 
 \subsection{Common Priors}
 
-
-
 \section{MCMC algorithm for estimating Multilevel IRT}
+
+\section{Experiments}
+\subsection{Dataset}
+
+\subsection{Results}
 
 
 
