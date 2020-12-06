@@ -64,14 +64,40 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
     \item Run the R and Stan models on PISA 2003 dataset to compare the two implementations, and also test the model's performance on a bigger dataset (since, authors analyzed an older, smaller PISA dataset in the paper).
 \end{enumerate}
 
-% \section{Book Chapters/Papers to Read}
-% \begin{enumerate}[label=(\alph*)]
-%     \item Background: Chapter 2 - Rasch Model, from Handbook of IRT, Vol 1 \cite{van2016handbook}.
-%     \item Background: Chapter 13 - Bayesian Estimation, Chapter 15 - Markov Chain Monte Carlo for Item Response Models from Handbook of IRT, Vol 2 \cite{hambleton2016handbook}.
-%     \item \textbf{Deep dive into the Paper:} Bayesian estimation of a multilevel IRT model using Gibbs sampling \cite{fox2001bayesian}
-% \end{enumerate}
+\section{Points to mention}
+\begin{itemize}
+    \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
+    
+    pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
+    
+    \item  Use these values as priors.
+    
+    pg 15 - However, typical item and person locations fall within –3 to 3 \cite{de2013theory}.
+    
+    pg 101 - Reasonably good values of $\alpha$ range from approximately 0.8 to about 2.5 \cite{de2013theory}.
+\end{itemize}
 
-% \section{Kaggle Competition Details}
+\section{x-PL IRT Model Specifications}
+
+\section{Multilevel IRT Model Specifications}
+
+Let learners be indexed by variable $i$, which ranges $1$ to $n_j$, where $j$ represents the index of the school from $1$ to $J$. Let items be indexed by variable $k$, which ranges from $1$ to $K$. Then, the probability that the learner $i$ studying in school $j$ will answer the item $k$ correctly is modeled by:
+
+\begin{equation}\label{first_level}
+    P(Y_{ijk}=1) | \theta_i, a_k, b_k) = \Phi(a_k \theta_{ij} - b_k),
+\end{equation}
+
+where $\theta_{ij}$ is the ability parameter of student $i$ in school $j$, $a_k$ is the item's discriminative power parameter, and $b_k$ is the item's difficulty parameter. Equation \eqref{first_level} models the first level of the multi-level IRT model.
+
+At level 1, let there be $Q$ covariates, denoted by $\boldsymbol{x}$, to model $\theta_{ij}$. Then,
+
+\begin{equation}\label{second_level}
+    \theta_{ij} = \beta_{0j} + \beta_{1j}x_{1ij} + ... + \beta_{Qj}x_{Qij} + e_{ij}
+\end{equation}
+
+$x_{qij}$, where $q \in [1, Q]$, contains the properties of the learner indexed by $ij$. It can be 0 or 1, denoting if the learner is male or female. It can be an integer to model the age of the learner. Once the parameters $\beta_{qj}$ are learned, one can explain the influence of learners' properties on their abilities and how they vary across schools. For instance, one can analyze the impact of learner's age (modeled by $\beta$) on his or her ability (modeled by $\theta$), depending on the school (modeled by the index $j$ in $\beta$).
+
+
 
 
 \bibliographystyle{plain}
