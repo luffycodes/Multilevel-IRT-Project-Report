@@ -78,7 +78,7 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
     pg 101 - Reasonably good values of $\alpha$ range from approximately 0.8 to about 2.5 \cite{de2013theory}.
 \end{itemize}
 
-\section{x-PL IRT Model Specifications}
+\section{Conceptual Development of x-PL IRT Models}
 
 \subsection{1-PL IRT Model}
 In an IRT model, one estimates the properties of the item which are responsible for the differing responses to that item. In education, these items are generally questions. In the 1-PL model, the most characteristic of the item is measured, which is the difficulty of the item. The probability that a learner will answer $j^{th}$ item correctly is modeled by:
@@ -106,7 +106,14 @@ The probability that a learner will answer $j^{th}$ item correctly in the 2PL mo
 where $\alpha_j$ is the item's discrimination parameter.
 
 \subsection{3-PL IRT Model}
-In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response.
+In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response. `By chance alone', it may be possible to correctly answer the item. To model this probability of correctly answering the item, purely by chance, 3-PL model is used.
+
+The probability that a learner will answer $j^{th}$ item correctly in the 3-PL model is modeled by:
+
+\begin{equation}\label{eq:3pl}
+    P(y_j=1|\theta, \delta_j, \alpha_j) = \chi_j + (1 - \chi_j) \frac{e^{\alpha_j(\theta - \delta_j)}}{1+e^{\alpha_j(\theta - \delta_j)}},
+\end{equation}
+where $\chi_j$ models the probability of correctly answering the item by pure guessing.
 
 
 \section{Multilevel IRT Model Specifications}
