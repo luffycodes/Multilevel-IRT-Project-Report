@@ -5,6 +5,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{natbib}
+\usepackage{graphicx}
 % \usepackage[sorting=none]{biblatex}
 \usepackage{enumitem}
 \renewcommand{\baselinestretch}{1.0}
@@ -79,10 +80,40 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
 
 \section{x-PL IRT Model Specifications}
 
+\subsection{1-PL IRT Model}
+In an IRT model, one estimates the properties of the item which are responsible for the differing responses to that item. In education, these items are generally questions. In the 1-PL model, the most characteristic of the item is measured, which is the difficulty of the item. The probability that a learner will answer $j^{th}$ item correctly is modeled by:
+
+\begin{equation}\label{eq:1pl}
+    P(y_j=1|\theta, \delta_j) = \frac{e^{\theta - \delta_j}}{1+e^{\theta - \delta_j}},
+\end{equation}
+where $y_j$ models the correctness of the response of the student to item $j$ (1 if correct, 0 otherwise),  $\theta$ is the learner's ability parameter, and $\delta_j$ is the item' difficulty parameter.
+
+\subsection{2-PL IRT Model}
+One can observe from \eqref{eq:1pl} that when a student's ability parameter, $\theta$, is equal to $\delta_j$, the probability of the student answering the question $j$ correctly is $0.5$. As $\theta$ moves away from $\delta_j$, the change in success probability ($dP/ d\theta) $ is not a function of the item (sigmoid function only gets shifted by $\delta_j$). However, in educational settings, some items may require a large change in $\theta$ to achieve some fixed change in success probability from $0.5$. To elucidate, $\delta_j$ is fixed at 1 in figure \ref{fig:2pl}. The blue line indicates the change in success probability across item 1 and item 2, when the ability parameter of the learner changes from 1 to 2. Thus, item 1 is said to be better at `discriminating' learners (more sensitive to $\theta$), since a large change in $\theta$ is needed for the same increase in success probability from 0.5.
+
+\begin{figure}[t]
+    \includegraphics[scale=0.5]{Plots/2pl.png}
+    \centering
+    \caption{2PL model}
+    \label{fig:2pl}
+\end{figure}
+
+The probability that a learner will answer $j^{th}$ item correctly in the 2PL model is modeled by:
+
+\begin{equation}\label{eq:2pl}
+    P(y_j=1|\theta, \delta_j, \alpha_j) = \frac{e^{\alpha_j(\theta - \delta_j)}}{1+e^{\alpha_j(\theta - \delta_j)}},
+\end{equation}
+where $\alpha_j$ is the item's discrimination parameter.
+
+\subsection{3-PL IRT Model}
+In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response.
+
+
 \section{Multilevel IRT Model Specifications}
 \subsection{Motivation for multilevel IRT model}
 \begin{itemize}
-    \item The assumption of homoscedasticity in standard IRT models
+    \item The assumption of homoscedasticity in standard IRT models.
+    \item Write about the change from sigmoid to normal ogive function.
     \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
     
     pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
@@ -111,21 +142,31 @@ Note that this level captures variance in student abilities within the same scho
 At level 3, let there be $S$ covariates, denoted by $\boldsymbol{w}$.
 
 \begin{equation}
-    \beta_{qj} = \gamma_{0qj} + \gamma_{1qj}w_{1j} + ... + \gamma_{Sqj}w_{Sj} + u_{qj},
+    \beta_{qj} = \gamma_{0q} + \gamma_{1q}w_{1j} + ... + \gamma_{Sq}w_{Sj} + u_{qj},
 \end{equation}
 
-for all $q \in [1, Q]$, and for all $ j \in [1, J]$. $w_{sj}$, where $s \in [1, S]$, contains the $s^{th}$ property of school $j$. For instance, it can be an integer to model the social, economic, and cultural status of the school. Then, $\gamma_{sqj}$ will explain the influence of the status of the school in relation to the $q^{th}$ property of the learner. For instance, if the $q^{th}$ property denotes if the learner is female or not ($x_{qij}$ is 1 if the $i^{th}$ learner in $j^{th}$ school is female, otherwise 0), one can analyze the importance of status of the school for better learning of the female students.
+for all $q \in [1, Q]$, and for all $ j \in [1, J]$. $w_{sj}$, where $s \in [1, S]$, contains the $s^{th}$ property of school $j$. For instance, it can be an integer to model the social, economic, and cultural status of the school. Then, $\gamma_{sq}$ will explain the influence of the status of the school in relation to the $q^{th}$ property of the learner. For instance, if the $q^{th}$ property denotes if the learner is female or not ($x_{qij}$ is 1 if the $i^{th}$ learner in $j^{th}$ school is female, otherwise 0), one can analyze the importance of status of the school for better learning of the female students.
 
 Note that this level captures variance in student abilities across different schools. Thus, it can explain the contribution of the school on difference in abilities of students.
 
 Also, $e_{ij} \sim \mathcal{N}(0, \sigma^2)$, while $\boldsymbol{u_j} \sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{T})$.
 
+\textbf{Distinction from the paper notation and possible error:}
+Notation from the paper \cite{fox2007multilevel} is followed, however, the paper reviewed is \cite{fox2001bayesian} from the same author. \cite{fox2001bayesian} was published in 2001, while \cite{fox2007multilevel} was published in 2007. This was done because \cite{fox2001bayesian} made an error (as far as I understood), and treated $w$ to be indexed by $q$ as well. Equation 5 from \cite{fox2001bayesian} is written below.
+
+\begin{equation*}
+    \beta_{qj} = \gamma_{0q} + \gamma_{1q}w_{11j} + ... + \gamma_{Sq}w_{Sqj} + u_{qj}, \text{ for } q\in [0,.., Q].
+\end{equation*}
 
 \subsection{Identifiability Issues}
 
 \subsection{Common Priors}
 
 \section{MCMC algorithm for estimating Multilevel IRT}
+Full conditionals for multilevel IRT model parameters are given by:
+\begin{enumerate}
+    \item $\mathcal{E}$
+\end{enumerate}
 
 \section{Experiments}
 \subsection{Dataset}
