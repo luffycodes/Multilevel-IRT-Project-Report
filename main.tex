@@ -124,6 +124,8 @@ where $\chi_j$ models the probability of correctly answering the item by pure gu
     \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
     
     pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
+    
+    \item Make a note that we are considering normal ogive model and not bernoulli logit model.
 \end{itemize}
 
 \subsection{Description of `levels' in multilevel IRT model}
@@ -168,11 +170,23 @@ Notation from the paper \cite{fox2007multilevel} is followed, however, the paper
 \subsection{Identifiability Issues}
 
 \subsection{Common Priors}
+Generally, items are not considered independent. They test a concept or are often tagged under an unifying skill. The below prior helps to capture the inter dependency between them.
+\begin{equation*}
+    (\text{log }a_k, b_k) \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})
+\end{equation*}
+Hyperpriors for $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$ are given by:
+\begin{align*}
+    \boldsymbol{\Sigma} & \sim Inv-Wishart_v(V^{-1}),\\
+    \boldsymbol{\mu}|\boldsymbol{\Sigma} & \sim \mathcal{N}(\mu_0, \Sigma/\kappa),
+\end{align*}
+where $v$ and $V$ are the degrees of freedom and scale matrix of the inverse Wishart distribution, $\mu_0$ is the prior mean, and $\kappa$ is the number of observations.
+
+Equations and notations for these priors are taken from \cite{fox2007multilevel}.
 
 \section{MCMC algorithm for estimating Multilevel IRT}
 Full conditionals for multilevel IRT model parameters are given by:
 \begin{enumerate}
-    \item $\mathcal{E}$
+    \item $\xi$
 \end{enumerate}
 
 \section{Experiments}
