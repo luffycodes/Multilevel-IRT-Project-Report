@@ -191,27 +191,45 @@ Notation from the paper \cite{fox2007multilevel} is followed, however, the paper
     \beta_{qj} = \gamma_{0q} + \gamma_{1q}w_{11j} + ... + \gamma_{Sq}w_{Sqj} + u_{qj}, \text{ for } q\in [0,.., Q].
 \end{equation*}
 
-\subsection{Identifiability Issues}
-
 \subsection{Common Priors}
 Generally, items are not considered independent. They test a concept or are often tagged under an unifying skill. The below prior helps to capture the inter dependency between them.
 \begin{equation*}
-    (\text{log }a_k, b_k) \sim \mathcal{N}(\boldsymbol{\mu}, \boldsymbol{\Sigma})
+    (\text{log }a_k, b_k) \sim \mathcal{N}(\boldsymbol{\mu_I}, \boldsymbol{\Sigma_I})
 \end{equation*}
 Hyperpriors for $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$ are given by:
 \begin{align*}
-    \boldsymbol{\Sigma} & \sim Inv-Wishart_v(V^{-1}),\\
-    \boldsymbol{\mu}|\boldsymbol{\Sigma} & \sim \mathcal{N}(\mu_0, \Sigma/\kappa),
+    \boldsymbol{\Sigma_I} & \sim Inv-Wishart_v(V^{-1}),\\
+    \boldsymbol{\mu_I}|\boldsymbol{\Sigma_I} & \sim \mathcal{N}(\mu_0, \Sigma_I/\kappa),
 \end{align*}
 where $v$ and $V$ are the degrees of freedom and scale matrix of the inverse Wishart distribution, $\mu_0$ is the prior mean, and $\kappa$ is the number of observations.
 
 Equations and notations for these priors are taken from \cite{fox2007multilevel}.
 
+\subsection{Identifiability Issues}
+
+For the feasibility of Gibbs sampling algorithm for normal ogive models (even without the multilevel extension), \cite{albert1992bayesian} proved that a variable transformation is needed. We introduce a variable, $z_{ijk}$, which is sampled using the following equation:
+
+\begin{equation*}
+    p(z_{ijk}| \boldsymbol{y, \theta, \xi_k}) = \mathcal{N}(a_k \theta_{ij}, 1)
+\end{equation*},
+where $\xi_k = (a_k, b_k)^t.$
+
+
 \section{MCMC algorithm for estimating Multilevel IRT}  \label{sec:full_conditionals_mlirt}
 Full conditionals for multilevel IRT model parameters are given by:
 \begin{enumerate}
-    \item $\xi$
-\end{enumerate}
+    \item The derivation for the following equations are provided in \cite{lindley1972bayes}.
+        \begin{align*}
+        p(\xi_k|\boldsymbol{\theta, z_k, \mu_I, \Sigma_I}) & = p(\boldsymbol{z_k|\xi_k, \theta})p(\xi_k|\boldsymbol{\mu_I, \Sigma_I})/p(\boldsymbol{z_k|\theta, \mu_I, \Sigma_I})) \\
+        & = \phi(\boldsymbol{\xi_k}|\hat{\boldsymbol{\xi_k}}, \Omega_I),
+        \end{align*} where
+        \begin{align*}
+            \hat{\boldsymbol{\xi_I}} & = \Omega_I(\boldsymbol{H^tz_k} + \Sigma^{-1}\boldsymbol{\mu_I}), \\
+            \Omega_I^{-1} & = \boldsymbol{H^tH} + \Sigma^{-1}, \\
+            \boldsymbol{H} & = [\boldsymbol{\theta, 1}].
+        \end{align*}
+        
+\end{enumerate} 
 
 \section{Experiment 1}
 \subsection{Motivation}
