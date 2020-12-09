@@ -78,7 +78,16 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
     pg 101 - Reasonably good values of $\alpha$ range from approximately 0.8 to about 2.5 \cite{de2013theory}.
 \end{itemize}
 
-\section{Conceptual Development of x-PL IRT Models}
+\section{Project Outline and Contributions}
+We start by understanding the conceptual development of IRT models in section \ref{sec:xpl_irt}. One key idea, that we understood by taking this route, is the decision to either use the normal ogive or the logit function to model the success probability of a student's response to an item. Rasch model, 1-PL, 2-PL, and 3-PL models use the logit function, while the paper under review for this project \cite{fox2001bayesian} uses the normal ogive function.
+
+We list down the full conditionals for the normal ogive model, derived in \cite{fox2001bayesian}, in section \ref{sec:full_conditionals_mlirt}. However, the use of Stan provides us with the flexibility to explore the multilevel IRT models through the lens of both the logit function, as well as the normal ogive function. One does not have to derive the full conditionals for the logit multilevel model.
+
+We experiment on a small dataset \cite{thissen1993detection} for which the Stan implementation of 2PL logit multilevel model is open-source \cite{furr2016two}. We modify the codebase for normal ogive model, and compare the two models. \cite{furr2016two} also highlights the importance of non-centered parametrization for hierarchical models (see \cite{papaspiliopoulos2007general} for in-depth review). In our experiments, we also test the impact of non-centered parametrization on effective sample size in the case of normal ogive model.
+
+Our experiments to run the models on the larger PISA 2003 dataset were unsuccessful, mainly because of the huge running time needed for successful convergence. Efforts to install and run the package (/source code) of `mlirt' in R provided by the author of \cite{fox2001bayesian} in 2007 \cite{fox2007multilevel} did not pay off. However, we could extract the code required to pre-process and load the 2003 PISA dataset from the `mlirt' package source code. Stan models to compare the multilevel normal ogive and logit models on PISA 2003 dataset are provided (tested for few chains and iterations), but the analysis is incomplete due to the running time needed for successful convergence.
+
+\section{Conceptual Development of x-PL IRT Models} \label{sec:xpl_irt}
 
 This section is based on the readings of chapter 1, 2, 5, and 6 of \cite{de2013theory}.
 
@@ -131,7 +140,7 @@ The probability that a learner will answer $j^{th}$ item correctly in the 3-PL m
 where $\chi_j$ models the probability of correctly answering the item by pure guessing.
 
 
-\section{Multilevel IRT Model Specifications}
+\section{Multilevel IRT Model Specifications} \label{sec:mlirt}
 \subsection{Motivation for multilevel IRT model}
 \begin{itemize}
     \item The assumption of homoscedasticity in standard IRT models.
@@ -198,7 +207,7 @@ where $v$ and $V$ are the degrees of freedom and scale matrix of the inverse Wis
 
 Equations and notations for these priors are taken from \cite{fox2007multilevel}.
 
-\section{MCMC algorithm for estimating Multilevel IRT}
+\section{MCMC algorithm for estimating Multilevel IRT}  \label{sec:full_conditionals_mlirt}
 Full conditionals for multilevel IRT model parameters are given by:
 \begin{enumerate}
     \item $\xi$
