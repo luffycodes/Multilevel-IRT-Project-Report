@@ -80,6 +80,8 @@ Lastly, I plan to implement the model in Stan (implementation of multilevel IRT 
 
 \section{Conceptual Development of x-PL IRT Models}
 
+This section is based on the readings of chapter 1, 2, 5, and 6 of \cite{de2013theory}.
+
 \subsection{1-PL IRT Model}
 In an IRT model, one estimates the properties of the item which are responsible for the differing responses to that item. In education, these items are generally questions. In the 1-PL model, the most characteristic of the item is measured, which is the difficulty of the item. The probability that a learner will answer $j^{th}$ item correctly is modeled by:
 
@@ -104,6 +106,19 @@ The probability that a learner will answer $j^{th}$ item correctly in the 2PL mo
     P(y_j=1|\theta, \delta_j, \alpha_j) = \frac{e^{\alpha_j(\theta - \delta_j)}}{1+e^{\alpha_j(\theta - \delta_j)}},
 \end{equation}
 where $\alpha_j$ is the item's discrimination parameter.
+
+\textbf{Note on use of sigmoid and its ramifications for multilevel IRT models:}
+
+Fitting the probability of the correct response using the sigmoid function is not an arbitrary choice. \cite{de2013theory} provides data studies to back this decision. Shape of the sigmoid curve also has resemblance to the cumulative distribution function (CDF) of the standard normal distribution. Thus, one can also use the CDF to model this probability. In that case, the probability that a learner will answer $j^{th}$ item correctly is modeled by:
+
+\begin{equation}\label{eq:2pl_normal_ogive}
+    P(y_j=1|\theta, \delta_j, \sigma_i) = \Phi(\frac{\theta - \delta_j}{\sigma_i}),
+\end{equation}
+where $\Phi$ is the CDF of the standard normal distribution, $\delta_i$ is the item's difficulty parameter, and $\sigma_i$ is the item's discrimination parameter. These models are termed as normal ogive models.
+
+Note that the paper under review, \cite{fox2001bayesian} provides multilevel extension of the normal ogive models only.
+
+In this project, I code 2PL Stan model for the normal ogive model and compare it is against 2PL Stan model for the logit model.
 
 \subsection{3-PL IRT Model}
 In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response. `By chance alone', it may be possible to correctly answer the item. To model this probability of correctly answering the item, purely by chance, 3-PL model is used.
@@ -189,10 +204,17 @@ Full conditionals for multilevel IRT model parameters are given by:
     \item $\xi$
 \end{enumerate}
 
-\section{Experiments}
+\section{Experiment 1}
+\subsection{Motivation}
+The purpose of this experiment is firstly, compare the normal ogive Stan 2PL model against the logit Stan 2PL model and secondly, compare the normal ogive multilevel Stan 2PL model against the logit multilevel Stan 2PL model.
+
+The paper under review \cite{fox2001bayesian} only derives the full conditionals for normal ogive model, and not for logit models. Using Stan, we can analyze if logit models provides better fit of the data as compared to the normal ogive models.
+
 \subsection{Dataset}
 
 \subsection{Results}
+
+\subsection{Code Details}
 
 
 
