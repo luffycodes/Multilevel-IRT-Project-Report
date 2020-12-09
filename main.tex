@@ -242,6 +242,25 @@ Full conditionals for multilevel IRT model parameters are given by (note that th
     and $\boldsymbol{z'_{ij}} = \boldsymbol{z_{ij} + b}$.
     
     \item Paper under review \cite{fox2001bayesian} provided the derivations for the regression coefficients which are listed below:
+    \begin{align*}
+        p(\boldsymbol{\beta_j|\theta,} \sigma^2, \boldsymbol{\gamma, T}) & = 
+        p(\boldsymbol{\theta_j|\beta_j}, \sigma^2)p(\boldsymbol{\beta_j|\gamma, T})/p(\boldsymbol{\theta}|\sigma^2,\boldsymbol{\gamma, T})\\
+        & = \phi(\boldsymbol{\beta_j}|\mu_\beta, \Sigma_\beta),
+    \end{align*} where
+    \begin{align*}
+        \mu_\beta & = \Sigma_\beta(\boldsymbol{x_j^t\theta_j}/\sigma^2 + \boldsymbol{T^{-1}w_j\gamma}),\\
+        \Sigma_\beta & = \boldsymbol{x_j^tx_j}/\sigma^2 + \boldsymbol{T^{-1}}.
+    \end{align*}
+    For regression coefficients at level 2, following equations are used:
+    \begin{align*}
+        p(\boldsymbol{\gamma|\beta, T}) & = 
+        p(\boldsymbol{\beta|\gamma, T})p(\boldsymbol{\gamma})/p(\boldsymbol{\beta|T})\\
+        & = \phi(\gamma|\mu_\gamma, \Sigma_\gamma)
+    \end{align*} where
+    \begin{align*}
+        \mu_\gamma & = \sum_j \boldsymbol{w^t_jT^{-1}w_j(\sum_j \boldsymbol{w^t_jT^{-1}\beta_j})}\\
+        \Sigma^{-1}_\gamma & = \sum_j \boldsymbol{w^t_jT^{-1}w_j}
+    \end{align*}
         
 \end{enumerate} 
 
