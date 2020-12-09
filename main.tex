@@ -216,7 +216,7 @@ where $\xi_k = (a_k, b_k)^t.$
 
 
 \section{MCMC algorithm for estimating Multilevel IRT}  \label{sec:full_conditionals_mlirt}
-Full conditionals for multilevel IRT model parameters are given by:
+Full conditionals for multilevel IRT model parameters are given by (note that the equations are taken from the \cite{fox2007multilevel}):
 \begin{enumerate}
     \item The derivation for the following equations are provided in \cite{lindley1972bayes}.
         \begin{align*}
@@ -226,8 +226,22 @@ Full conditionals for multilevel IRT model parameters are given by:
         \begin{align*}
             \hat{\boldsymbol{\xi_I}} & = \Omega_I(\boldsymbol{H^tz_k} + \Sigma^{-1}\boldsymbol{\mu_I}), \\
             \Omega_I^{-1} & = \boldsymbol{H^tH} + \Sigma^{-1}, \\
-            \boldsymbol{H} & = [\boldsymbol{\theta, 1}].
+            \boldsymbol{H} & = [\boldsymbol{\theta, 1}],
         \end{align*}
+        and $\phi$ is the normal distribution.
+        
+    \item The derivation for the following equations are provided in \cite{albert1992bayesian}. Note that this follows similar steps from the paper \cite{lindley1972bayes}.
+    \begin{align*}
+        p(\theta_{ij}| \boldsymbol{z'_{ij}, \xi, \beta_j,} \sigma^2) & = p(\boldsymbol{z'_{ij}}|\theta_{ij}, \boldsymbol{\xi}) p(\theta_{ij}|\boldsymbol{\beta_j}, \sigma^2)/p(\boldsymbol{z'_{ij}}|\boldsymbol{\xi, \beta_j,}\sigma^2)\\
+        & = \phi(\theta_{ij}|\mu_\theta, \Sigma_\theta),
+    \end{align*} where
+    \begin{align*}
+        \mu_\theta & = \Sigma_\theta(\boldsymbol{a^tz'_{ij} + x_{ij}\beta_j/}\sigma^2),\\
+        \Sigma^{-1} & = \boldsymbol{a^ta} + \sigma^{-2},
+    \end{align*}
+    and $\boldsymbol{z'_{ij}} = \boldsymbol{z_{ij} + b}$.
+    
+    \item Paper under review \cite{fox2001bayesian} provided the derivations for the regression coefficients which are listed below:
         
 \end{enumerate} 
 
