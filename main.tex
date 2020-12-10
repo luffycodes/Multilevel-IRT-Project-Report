@@ -46,6 +46,9 @@ Shashank Sonkar \\
 \end{center}
 
 \section{Item Response Theory}
+
+
+\section{Item Response Theory}
 Let us say we are given some questions, and students' responses to these questions (responses are either marked correct or incorrect). Given this information, one of the most important tasks in the field of educational data mining is to predict each question's (also called an item) difficulty and each student's proficiency. Rasch laid the foundation of item response theory (IRT) in around 1960s \cite{rasch1960probabilistic,rasch1966item}. Using Markov Chain Monte Carlo (MCMC) methods, one can estimate the item difficulty and student proficiency parameters.
 
 In this project, I plan to first do a short review of IRT to understand its foundations (e.g., model design like 1PL, 2PL, 3PL models) and sampling methods that are often used to estimate its parameters.
@@ -296,12 +299,18 @@ We use a small scale spelling dataset \cite{thissen1993detection}, which contain
 \subsubsection{Normal Ogive 2PL vs Logit 2PL model}
 Comparing figure \ref{2pl_logit_raw_score} with \ref{2pl_ogive_raw_score}, one can observe that posterior predictive medians of normal ogive 2PL model align better with observed data as compared to logit 2PL model, especially for item 3 and 4.
 
-Also, the chi square discrepancy test produces heavier tails with largely incorrect PPP values for logit 2PL model, as compared to normal ogive 2PL model.
+Also, the chi square discrepancy test produces heavier tails with largely incorrect PPP values for logit 2PL model, as compared to normal ogive 2PL model (figure \ref{2pl_logit_chi_squar} vs \ref{2pl_ogive_chi_squar}).
 
 Thus, we can conclude from these test that for this dataset, using the normal ogive model provides a better fit to the data as compared to the logit model.
 
 \subsubsection{Normal Ogive Multilevel 2PL vs Logit 2PL Multilevel model}
-Both models do not seem to provide a good fit to the observed data.
+Both models perform similar, and seem to provide a similar fit to the observed data (figures \ref{2pl_logit_mlirt_raw_score}, \ref{2pl_ogive_nc_mlirt_raw_score}, \ref{2pl_logit_mlirt_chi_squar}, and \ref{2pl_ogive_nc_mlirt_chi_squar}).
+
+\subsubsection{Normal Ogive Multilevel 2PL: Centered vs Non-centered Parametrization}
+
+As stated earlier \cite{furr2016two} suggests using non-centered parametrization for hierarchical models for better effective sample size. However, for normal ogive 2PL models, we found that the mean effective size for all parameters was more for centered parametrization as compared to non-centered parametrization (465 vs 447 with standard deviation of 148 vs 184 respectively).
+
+We found similar statistics for logit models as well, however, the stan documentations \cite{furr2016two} writes otherwise.
 
 \subsection{Code Details}
 
