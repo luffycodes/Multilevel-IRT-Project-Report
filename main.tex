@@ -45,65 +45,62 @@ Shashank Sonkar \\
 {\bf Project Report}
 \end{center}
 
-\section{Item Response Theory}
-
-
-\section{Item Response Theory}
+\section{Introduction}
 Let us say we are given some questions, and students' responses to these questions (responses are either marked correct or incorrect). Given this information, one of the most important tasks in the field of educational data mining is to predict each question's (also called an item) difficulty and each student's proficiency. Rasch laid the foundation of item response theory (IRT) in around 1960s \cite{rasch1960probabilistic,rasch1966item}. Using Markov Chain Monte Carlo (MCMC) methods, one can estimate the item difficulty and student proficiency parameters.
 
-In this project, I plan to first do a short review of IRT to understand its foundations (e.g., model design like 1PL, 2PL, 3PL models) and sampling methods that are often used to estimate its parameters.
+However, one of the main drawbacks of the IRT models is the lack of interpretability. To alleviate this drawback, the paper under review for this project \cite{fox2001bayesian} provides an elegant multilevel extension to traditional IRT models. This paper extends the standard IRT model further by grouping students into schools, and proposing a multilevel regression model to study the properties of groups (e.g. schools, in this case) as well. It adopts a fully Bayesian approach, unlike its predecessors, that provides it benefits like uncertainty quantification, and ease of incorporating information about schools through priors.
 
-Then, I plan to deep dive into the following paper - Bayesian estimation of a multilevel IRT model using Gibbs sampling \cite{fox2001bayesian}. This paper extends the standard IRT model further by grouping students into schools, and proposing a multilevel regression model to study the properties of second-level groups (e.g. schools, in this case) as well. It adopts a fully Bayesian approach, unlike its predecessors, that provides it benefits like uncertainty quantification, and ease of incorporating information about schools through priors.
+% \section{Main topics to be covered:}
+% \begin{enumerate}[label=(\alph*)]
+%     \item Understand standard IRT models
+%     \item Understand the assumption of homoscedasticity in standard IRT models that the paper tries to alleviate.
+%     \item Understand two-Level one-way random effects ANOVA model.
+%     \item Study how the above model can be used to model the multilevel extension to the standard IRT model.
+%     \item Understand the estimation of multilevel IRT model parameters using Gibbs sampling.
+%     \item Implement the model in Stan.
+%     \item Run the R and Stan models on PISA 2003 dataset to compare the two implementations, and also test the model's performance on a bigger dataset (since, authors analyzed an older, smaller PISA dataset in the paper).
+% \end{enumerate}
 
-Lastly, I plan to implement the model in Stan (implementation of multilevel IRT model is available in MLIRT package in R) and also, test the model performance on a bigger PISA 2003 dataset (authors tested on an older PISA dataset, number of students and schools in PISA 2003 are 3829 and 150 respectively, versus 2156 and 97 in the older dataset).
-
-\section{Main topics to be covered:}
-\begin{enumerate}[label=(\alph*)]
-    \item Understand standard IRT models
-    \item Understand the assumption of homoscedasticity in standard IRT models that the paper tries to alleviate.
-    \item Understand two-Level one-way random effects ANOVA model.
-    \item Study how the above model can be used to model the multilevel extension to the standard IRT model.
-    \item Understand the estimation of multilevel IRT model parameters using Gibbs sampling.
-    \item Implement the model in Stan.
-    \item Run the R and Stan models on PISA 2003 dataset to compare the two implementations, and also test the model's performance on a bigger dataset (since, authors analyzed an older, smaller PISA dataset in the paper).
-\end{enumerate}
-
-\section{Points to mention}
-\begin{itemize}
-    \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
+% \section{Points to mention}
+% \begin{itemize}
+%     \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
     
-    pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
+%     pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
     
-    \item  Use these values as priors.
+%     \item  Use these values as priors.
     
-    pg 15 - However, typical item and person locations fall within –3 to 3 \cite{de2013theory}.
+%     pg 15 - However, typical item and person locations fall within –3 to 3 \cite{de2013theory}.
     
-    pg 101 - Reasonably good values of $\alpha$ range from approximately 0.8 to about 2.5 \cite{de2013theory}.
-\end{itemize}
+%     pg 101 - Reasonably good values of $\alpha$ range from approximately 0.8 to about 2.5 \cite{de2013theory}.
+% \end{itemize}
 
 \section{Project Outline and Contributions}
 We start by understanding the conceptual development of IRT models in section \ref{sec:xpl_irt}. One key idea, that we understood by taking this route, is the decision to either use the normal ogive or the logit function to model the success probability of a student's response to an item. Rasch model, 1-PL, 2-PL, and 3-PL models use the logit function, while the paper under review for this project \cite{fox2001bayesian} uses the normal ogive function.
 
-We list down the full conditionals for the normal ogive model, derived in \cite{fox2001bayesian}, in section \ref{sec:full_conditionals_mlirt}. However, the use of Stan provides us with the flexibility to explore the multilevel IRT models through the lens of both the logit function, as well as the normal ogive function. One does not have to derive the full conditionals for the logit multilevel model.
+We list down the full conditionals for the normal ogive model, derived in \cite{fox2001bayesian}, in section \ref{sec:full_conditionals_mlirt}. To explore the multilevel IRT models through the lens of the logit function, and not just normal ogive function \cite{fox2001bayesian}, we use Stan which provides us with the flexibility to model a logit multilevel IRT model without deriving the full conditionals.
 
-We experiment on a small dataset \cite{thissen1993detection} for which the Stan implementation of 2PL logit multilevel model is open-source \cite{furr2016two}. We modify the codebase for normal ogive model, and compare the two models. \cite{furr2016two} also highlights the importance of non-centered parametrization for hierarchical models (see \cite{papaspiliopoulos2007general} for in-depth review). In our experiments, we also test the impact of non-centered parametrization on effective sample size in the case of normal ogive model.
+We experiment on a small dataset \cite{thissen1993detection} for which the Stan implementation of 2PL logit multilevel model is open-source \cite{furr2016two}. We can easily modify the codebase for normal ogive model to replicate \cite{fox2001bayesian}, and compare the two models. The primary motivation to compare the two models is to check which one of the two - logit or normal-ogive, provides a better fit to the data.
 
-Our experiments to run the models on the larger PISA 2003 dataset were unsuccessful, mainly because of the huge running time needed for successful convergence. Efforts to install and run the package (/source code) of `mlirt' in R provided by the author of \cite{fox2001bayesian} in 2007 \cite{fox2007multilevel} did not pay off. However, we could extract the code required to pre-process and load the 2003 PISA dataset from the `mlirt' package source code. Stan models to compare the multilevel normal ogive and logit models on PISA 2003 dataset are provided (tested for few chains and iterations), but the analysis is incomplete due to the running time needed for successful convergence.
+For implementations in Stan, \cite{furr2016two} highlights the importance of non-centered parametrization for hierarchical models (see \cite{papaspiliopoulos2007general} for in-depth review). In our experiments, we also test the impact of non-centered parametrization on effective sample size in the case of normal ogive 2PL multilevel model.
+
+Our experiments to run the models on the larger PISA 2003 dataset were unsuccessful, mainly because of the huge running time needed for successful convergence. Efforts to install and run the package (/source code) of `mlirt' in R provided by the author of \cite{fox2001bayesian} in 2007 \cite{fox2007multilevel} did not pay off. However, we could extract the code required to pre-process and load the 2003 PISA dataset from the `mlirt' package source code.
+
+% Stan models to compare the multilevel normal ogive and logit models on PISA 2003 dataset are provided (tested for few chains and iterations), but the analysis is incomplete due to the running time needed for successful convergence.
 
 \section{Conceptual Development of x-PL IRT Models} \label{sec:xpl_irt}
 
 This section is based on the readings of chapter 1, 2, 5, and 6 of \cite{de2013theory}.
 
 \subsection{1-PL IRT Model}
-In an IRT model, one estimates the properties of the item which are responsible for the differing responses to that item. In education, these items are generally questions. In the 1-PL model, the most characteristic of the item is measured, which is the difficulty of the item. The probability that a learner will answer $j^{th}$ item correctly is modeled by:
+In an IRT model, one estimates the properties of the item which are responsible for the differing responses to that item. In education, these items are generally questions. In the 1-PL model, the most characteristic of the item is measured, which is the difficulty of the item. The probability that a student will answer $j^{th}$ item correctly is modeled by:
 
 \begin{equation}\label{eq:1pl}
     P(y_j=1|\theta, \delta_j) = \frac{e^{\theta - \delta_j}}{1+e^{\theta - \delta_j}},
 \end{equation}
-where $y_j$ models the correctness of the response of the student to item $j$ (1 if correct, 0 otherwise),  $\theta$ is the learner's ability parameter, and $\delta_j$ is the item' difficulty parameter.
+where $y_j$ models the correctness of the response of the student to item $j$ (1 if correct, 0 otherwise),  $\theta$ is the student's ability parameter, and $\delta_j$ is the item' difficulty parameter.
 
 \subsection{2-PL IRT Model}
-One can observe from \eqref{eq:1pl} that when a student's ability parameter, $\theta$, is equal to $\delta_j$, the probability of the student answering the question $j$ correctly is $0.5$. As $\theta$ moves away from $\delta_j$, the change in success probability ($dP/ d\theta) $ is not a function of the item (sigmoid function only gets shifted by $\delta_j$). However, in educational settings, some items may require a large change in $\theta$ to achieve some fixed change in success probability from $0.5$. To elucidate, $\delta_j$ is fixed at 1 in figure \ref{fig:2pl}. The blue line indicates the change in success probability across item 1 and item 2, when the ability parameter of the learner changes from 1 to 2. Thus, item 1 is said to be better at `discriminating' learners (more sensitive to $\theta$), since a large change in $\theta$ is needed for the same increase in success probability from 0.5.
+One can observe from \eqref{eq:1pl} that when a student's ability parameter, $\theta$, is equal to $\delta_j$, the probability of the student answering the question $j$ correctly is $0.5$. As $\theta$ moves away from $\delta_j$, the change in success probability ($dP/ d\theta) $ is not a function of the item (sigmoid function only gets shifted by $\delta_j$). However, in educational settings, some items may require a large change in $\theta$ to achieve some fixed change in success probability from $0.5$. To elucidate, $\delta_j$ is fixed at 1 in figure \ref{fig:2pl}. The blue line indicates the change in success probability across item 1 and item 2, when the ability parameter of the student changes from 1 to 2. Thus, item 1 is said to be better at `discriminating' students (more sensitive to $\theta$), since a large change in $\theta$ is needed for the same increase in success probability from 0.5.
 
 \begin{figure}[t]
     \includegraphics[scale=0.5]{Plots/2pl.png}
@@ -112,7 +109,7 @@ One can observe from \eqref{eq:1pl} that when a student's ability parameter, $\t
     \label{fig:2pl}
 \end{figure}
 
-The probability that a learner will answer $j^{th}$ item correctly in the 2PL model is modeled by:
+The probability that a student will answer $j^{th}$ item correctly in the 2PL model is modeled by:
 
 \begin{equation}\label{eq:2pl}
     P(y_j=1|\theta, \delta_j, \alpha_j) = \frac{e^{\alpha_j(\theta - \delta_j)}}{1+e^{\alpha_j(\theta - \delta_j)}},
@@ -121,7 +118,7 @@ where $\alpha_j$ is the item's discrimination parameter.
 
 \textbf{Note on use of sigmoid and its ramifications for multilevel IRT models:}
 
-Fitting the probability of the correct response using the sigmoid function is not an arbitrary choice. \cite{de2013theory} provides data studies to back this decision. Shape of the sigmoid curve also has resemblance to the cumulative distribution function (CDF) of the standard normal distribution. Thus, one can also use the CDF to model this probability. In that case, the probability that a learner will answer $j^{th}$ item correctly is modeled by:
+Fitting the probability of the correct response using the sigmoid function is not an arbitrary choice. \cite{de2013theory} provides data studies to back this decision. Shape of the sigmoid curve also has resemblance to the cumulative distribution function (CDF) of the standard normal distribution. Thus, one can also use the CDF to model this probability. In that case, the probability that a student will answer $j^{th}$ item correctly is modeled by:
 
 \begin{equation}\label{eq:2pl_normal_ogive}
     P(y_j=1|\theta, \delta_j, \sigma_i) = \Phi(\frac{\theta - \delta_j}{\sigma_i}),
@@ -135,7 +132,7 @@ In this project, I code 2PL Stan model for the normal ogive model and compare it
 \subsection{3-PL IRT Model}
 In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response. `By chance alone', it may be possible to correctly answer the item. To model this probability of correctly answering the item, purely by chance, 3-PL model is used.
 
-The probability that a learner will answer $j^{th}$ item correctly in the 3-PL model is modeled by:
+The probability that a student will answer $j^{th}$ item correctly in the 3-PL model is modeled by:
 
 \begin{equation}\label{eq:3pl}
     P(y_j=1|\theta, \delta_j, \alpha_j) = \chi_j + (1 - \chi_j) \frac{e^{\alpha_j(\theta - \delta_j)}}{1+e^{\alpha_j(\theta - \delta_j)}},
@@ -145,19 +142,21 @@ where $\chi_j$ models the probability of correctly answering the item by pure gu
 
 \section{Multilevel IRT Model Specifications} \label{sec:mlirt}
 \subsection{Motivation for multilevel IRT model}
-\begin{itemize}
-    \item The assumption of homoscedasticity in standard IRT models.
-    \item Write about the change from sigmoid to normal ogive function.
-    \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
+Just like of the the main critiques of deep learning models, the key drawback with the IRT models is their lack of interpretability. Assigning meaning to $\theta$ and $\delta$ parameters is upto to the modeler. IRT models fail to answer simple, yet necessary questions, like, does gender affect the students' ability in particular subjects, how much is the school responsible for poor performance of students, etc. These are quite relevant questions for policy makers, however, IRT models fail to offer answers to these questions. Multilevel IRT models alleviate this drawback due to their explanatory model design.
+
+% \begin{itemize}
+%     \item The assumption of homoscedasticity in standard IRT models.
+%     \item Write about the change from sigmoid to normal ogive function.
+%     \item IRT models do not explain - multilevel IRT models are an attempt to integrate at least some interpretability.
     
-    pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
+%     pg 5- (See Appendix E, “Linear Logistic Test Model [LLTM],” for a brief presentation of one of these explanatory approaches, as well as De Boeck \& Wilson [2004] for alternative approaches.) The cognitive processes used by an individual to respond to an item are not modeled in the commonly used IRT models. In short, this approach is analogous to measuring the speed of an automobile without understanding how an automobile moves. \cite{de2013theory}
     
-    \item Make a note that we are considering normal ogive model and not bernoulli logit model.
-\end{itemize}
+%     \item Make a note that we are considering normal ogive model and not bernoulli logit model.
+% \end{itemize}
 
 \subsection{Description of `levels' in multilevel IRT model}
 
-Let learners be indexed by variable $i$, which ranges $1$ to $n_j$, where $j$ represents the index of the school from $1$ to $J$. Let items be indexed by variable $k$, which ranges from $1$ to $K$. Then, the probability that the learner $i$ studying in school $j$ will answer the item $k$ correctly is modeled by:
+Let students be indexed by variable $i$, which ranges $1$ to $n_j$, where $j$ represents the index of the school from $1$ to $J$. Let items be indexed by variable $k$, which ranges from $1$ to $K$. Then, the probability that the student $i$ studying in school $j$ will answer the item $k$ correctly is modeled by:
 
 \begin{equation}\label{first_level}
     P(Y_{ijk}=1) | \theta_i, a_k, b_k) = \Phi(a_k \theta_{ij} - b_k),
@@ -171,7 +170,7 @@ At level 2, let there be $Q$ covariates, denoted by $\boldsymbol{x}$, to model $
     \theta_{ij} = \beta_{0j} + \beta_{1j}x_{1ij} + ... + \beta_{Qj}x_{Qij} + e_{ij}.
 \end{equation}
 
-$x_{qij}$, where $q \in [1, Q]$, contains the properties of the learner indexed by $ij$. It can be 0 or 1, denoting if the learner is male or female. It can be an integer to model the age of the learner. Once the parameters $\beta_{qj}$ are learned, one can explain the influence of learners' properties on their abilities and how they vary across schools. For instance, one can analyze the impact of learner's age (modeled by $\beta$) on his or her ability (modeled by $\theta$), depending on the school (modeled by the index $j$ in $\beta$).
+$x_{qij}$, where $q \in [1, Q]$, contains the properties of the student indexed by $ij$. It can be 0 or 1, denoting if the student is male or female. It can be an integer to model the age of the student. Once the parameters $\beta_{qj}$ are learned, one can explain the influence of students' properties on their abilities and how they vary across schools. For instance, one can analyze the impact of student's age (modeled by $\beta$) on his or her ability (modeled by $\theta$), depending on the school (modeled by the index $j$ in $\beta$).
 
 Note that this level captures variance in student abilities within the same school.
 
@@ -181,7 +180,7 @@ At level 3, let there be $S$ covariates, denoted by $\boldsymbol{w}$.
     \beta_{qj} = \gamma_{0q} + \gamma_{1q}w_{1j} + ... + \gamma_{Sq}w_{Sj} + u_{qj},
 \end{equation}
 
-for all $q \in [1, Q]$, and for all $ j \in [1, J]$. $w_{sj}$, where $s \in [1, S]$, contains the $s^{th}$ property of school $j$. For instance, it can be an integer to model the social, economic, and cultural status of the school. Then, $\gamma_{sq}$ will explain the influence of the status of the school in relation to the $q^{th}$ property of the learner. For instance, if the $q^{th}$ property denotes if the learner is female or not ($x_{qij}$ is 1 if the $i^{th}$ learner in $j^{th}$ school is female, otherwise 0), one can analyze the importance of status of the school for better learning of the female students.
+for all $q \in [1, Q]$, and for all $ j \in [1, J]$. $w_{sj}$, where $s \in [1, S]$, contains the $s^{th}$ property of school $j$. For instance, it can be an integer to model the social, economic, and cultural status of the school. Then, $\gamma_{sq}$ will explain the influence of the status of the school in relation to the $q^{th}$ property of the student. For instance, if the $q^{th}$ property denotes if the student is female or not ($x_{qij}$ is 1 if the $i^{th}$ student in $j^{th}$ school is female, otherwise 0), one can analyze the importance of status of the school for better learning of the female students.
 
 Note that this level captures variance in student abilities across different schools. Thus, it can explain the contribution of the school on difference in abilities of students.
 
@@ -213,8 +212,8 @@ Equations and notations for these priors are taken from \cite{fox2007multilevel}
 For the feasibility of Gibbs sampling algorithm for normal ogive models (even without the multilevel extension), \cite{albert1992bayesian} proved that a variable transformation is needed. We introduce a variable, $z_{ijk}$, which is sampled using the following equation:
 
 \begin{equation*}
-    p(z_{ijk}| \boldsymbol{y, \theta, \xi_k}) = \mathcal{N}(a_k \theta_{ij}, 1)
-\end{equation*},
+    p(z_{ijk}| \boldsymbol{y, \theta, \xi_k}) = \mathcal{N}(a_k \theta_{ij}, 1),
+\end{equation*}
 where $\xi_k = (a_k, b_k)^t.$
 
 
