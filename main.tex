@@ -118,16 +118,16 @@ where $\alpha_j$ is the item's discrimination parameter.
 
 \textbf{Note on use of sigmoid and its ramifications for multilevel IRT models:}
 
-Fitting the probability of the correct response using the sigmoid function is not an arbitrary choice. \cite{de2013theory} provides data studies to back this decision. Shape of the sigmoid curve also has resemblance to the cumulative distribution function (CDF) of the standard normal distribution. Thus, one can also use the CDF to model this probability. In that case, the probability that a student will answer $j^{th}$ item correctly is modeled by:
+Fitting the probability of the correct response using the sigmoid function is not an arbitrary choice. \cite{de2013theory} provides data studies to back this decision. Shape of the sigmoid curve also has resemblance to the cumulative distribution function (CDF) of the standard normal distribution. Thus, one can also use the standard normal CDF to model this probability. In that case, the probability that a student will answer $j^{th}$ item correctly is modeled by:
 
 \begin{equation}\label{eq:2pl_normal_ogive}
     P(y_j=1|\theta, \delta_j, \sigma_i) = \Phi(\frac{\theta - \delta_j}{\sigma_i}),
 \end{equation}
-where $\Phi$ is the CDF of the standard normal distribution, $\delta_i$ is the item's difficulty parameter, and $\sigma_i$ is the item's discrimination parameter. These models are termed as normal ogive models.
+where $\Phi$ is the CDF of the standard normal distribution, $\delta_i$ is the item's difficulty parameter, and $\sigma_i$ is the item's discrimination parameter. \textbf{These models are termed as normal ogive models.}
 
 Note that the paper under review, \cite{fox2001bayesian} provides multilevel extension of the normal ogive models only.
 
-In this project, I code 2PL Stan model for the normal ogive model and compare it is against 2PL Stan model for the logit model.
+In this project, we also modify the code 2PL Stan model for the logit model to transform it into the normal ogive 2PL Stan model, and compare the models by their fit on the observed data. Our findings suggest that normal ogive 2PL model provides better fit for the dataset in study.
 
 \subsection{3-PL IRT Model}
 In educational settings, multiple-choice questions (MCQs) are the easiest to grade, since open-form questions require human intervention to grade the response. However, designing the choices for MCQs is challenging. A question may be hard, but looking at the choices, it may be easy to guess the correct response. `By chance alone', it may be possible to correctly answer the item. To model this probability of correctly answering the item, purely by chance, 3-PL model is used.
@@ -142,7 +142,7 @@ where $\chi_j$ models the probability of correctly answering the item by pure gu
 
 \section{Multilevel IRT Model Specifications} \label{sec:mlirt}
 \subsection{Motivation for multilevel IRT model}
-Just like of the the main critiques of deep learning models, the key drawback with the IRT models is their lack of interpretability. Assigning meaning to $\theta$ and $\delta$ parameters is upto to the modeler. IRT models fail to answer simple, yet necessary questions, like, does gender affect the students' ability in particular subjects, how much is the school responsible for poor performance of students, etc. These are quite relevant questions for policy makers, however, IRT models fail to offer answers to these questions. Multilevel IRT models alleviate this drawback due to their explanatory model design.
+Just like deep learning models, the key drawback with the IRT models is their lack of interpretability. Assigning meaning to $\theta$ and $\delta$ parameters is upto to the modeler. In fact, the origin of 2PL and 3PL models was to fit the observed data more accurately, which the simple Rasch model did not provide \cite{de2013theory}. The trade-off is that the IRT models fail to answer simple, yet necessary questions, for instance, does gender affect the students' ability in particular subjects, how much is the school responsible for poor performance of students, etc. These are quite relevant questions for policy makers, however, IRT models fail to offer satisfactory answers to these questions. On the other hand, multilevel IRT models alleviate this drawback due to their explanatory model design.
 
 % \begin{itemize}
 %     \item The assumption of homoscedasticity in standard IRT models.
@@ -172,7 +172,7 @@ At level 2, let there be $Q$ covariates, denoted by $\boldsymbol{x}$, to model $
 
 $x_{qij}$, where $q \in [1, Q]$, contains the properties of the student indexed by $ij$. It can be 0 or 1, denoting if the student is male or female. It can be an integer to model the age of the student. Once the parameters $\beta_{qj}$ are learned, one can explain the influence of students' properties on their abilities and how they vary across schools. For instance, one can analyze the impact of student's age (modeled by $\beta$) on his or her ability (modeled by $\theta$), depending on the school (modeled by the index $j$ in $\beta$).
 
-Note that this level captures variance in student abilities within the same school.
+Note that this level captures variance in student abilities within the same school, and provides explanations for students' abilities based on their characteristics. \textbf{In our experiments, we restrict our analysis to level 2 multilevel IRT models, and choose gender of the student as the covariate.}
 
 At level 3, let there be $S$ covariates, denoted by $\boldsymbol{w}$.
 
@@ -187,7 +187,7 @@ Note that this level captures variance in student abilities across different sch
 Also, $e_{ij} \sim \mathcal{N}(0, \sigma^2)$, while $\boldsymbol{u_j} \sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{T})$.
 
 \textbf{Distinction from the paper notation and possible error:}
-Notation from the paper \cite{fox2007multilevel} is followed, however, the paper reviewed is \cite{fox2001bayesian} from the same author. \cite{fox2001bayesian} was published in 2001, while \cite{fox2007multilevel} was published in 2007. This was done because \cite{fox2001bayesian} made an error (as far as I understood), and treated $w$ to be indexed by $q$ as well. Equation 5 from \cite{fox2001bayesian} is written below.
+Notation from the paper \cite{fox2007multilevel} is followed, however, the paper reviewed is \cite{fox2001bayesian} from the same author. \cite{fox2001bayesian} was published in 2001, while \cite{fox2007multilevel} was published in 2007. This was done because \cite{fox2001bayesian} made an error (as far as I understood), and treated $w$ to be indexed by $q$ as well. Equation 5 from \cite{fox2001bayesian}, which I feel has an indexing error, is written below.
 
 \begin{equation*}
     \beta_{qj} = \gamma_{0q} + \gamma_{1q}w_{11j} + ... + \gamma_{Sq}w_{Sqj} + u_{qj}, \text{ for } q\in [0,.., Q].
@@ -205,11 +205,11 @@ Hyperpriors for $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$ are given by:
 \end{align*}
 where $v$ and $V$ are the degrees of freedom and scale matrix of the inverse Wishart distribution, $\mu_0$ is the prior mean, and $\kappa$ is the number of observations.
 
-Equations and notations for these priors are taken from \cite{fox2007multilevel}.
+Equations and notations for these priors are again taken from \cite{fox2007multilevel}.
 
 \subsection{Identifiability Issues}
 
-For the feasibility of Gibbs sampling algorithm for normal ogive models (even without the multilevel extension), \cite{albert1992bayesian} proved that a variable transformation is needed. We introduce a variable, $z_{ijk}$, which is sampled using the following equation:
+For the feasibility of Gibbs sampling algorithm for normal ogive models (even without the multilevel extension), \cite{albert1992bayesian} proved that a variable transformation is needed. One needs to introduce a new variable, $z_{ijk}$, which is sampled using the following equation:
 
 \begin{equation*}
     p(z_{ijk}| \boldsymbol{y, \theta, \xi_k}) = \mathcal{N}(a_k \theta_{ij}, 1),
@@ -265,25 +265,25 @@ To implement the Gibbs sampling algorithm the full conditionals for multilevel I
     \end{align*}
     
     
-To circumvent these tedious calculations for the multilevel logit IRT models, we use Stan in our experiments.
+To circumvent these tedious calculations for the multilevel logit IRT models, we use open-source logit IRT models Stan implementations in our experiments.
 \end{enumerate} 
 
-\section{Experiment 1}
+\section{Experiment}
 \subsection{Motivation}
-The purpose of this experiment is firstly, compare the normal ogive Stan 2PL model against the logit Stan 2PL model, secondly, compare the normal ogive multilevel Stan 2PL model against the logit multilevel Stan 2PL model, and lastly, measure the effect of non-centered parametrization of effective sample size in the case of normal ogive Stan 2PL model \cite{papaspiliopoulos2007general}. 
+The purpose of this experiment is firstly, compare the model fit of normal ogive Stan 2PL model against the logit Stan 2PL model on observed data, secondly, compare the model fit of normal ogive multilevel Stan 2PL model against the logit multilevel Stan 2PL model on observed data, and lastly, measure the effect on non-centered parametrization on effective sample size in the case of normal ogive Stan 2PL model \cite{papaspiliopoulos2007general}. 
 
 The paper under review \cite{fox2001bayesian} only derives the full conditionals for normal ogive model, and not for logit models. Using Stan, we can analyze if logit models provides a better fit of the data as compared to the normal ogive models.
 
-To compare the models, we try to replicate the data by sampling from posterior predictive distribution and subsequently, compare the replicated data against the original data test statistics using the following strategies.
+To compare the model fits on observed data, we adopt standard techniques (for which open-source implementations are already available \cite{furr2016two}) which try to replicate the data by sampling from posterior predictive distribution and subsequently, compare the replicated data against the original data test statistics using the following strategies.
 \begin{enumerate}
     \item Use a violin plot to graph the distribution of test scores.
-    \item For each replicated dataset, one can use $\chi^2_{NC}$ test statistic \cite{beguin2001mcmc} to summarize the shift of the replicated test score distribution from the observed test score distribution, where $\chi^2_{NC}$ is defined as:
+    \item For each replicated dataset, \cite{furr2016two} uses $\chi^2_{NC}$ test statistic \cite{beguin2001mcmc} to summarize the shift of the replicated test score distribution from the observed test score distribution, where $\chi^2_{NC}$ is defined as:
     \begin{equation*}
         \chi^2_{NC} = \sum_{s=0}^S \frac{[NC_s - E(NC_s)]^2}{E(NC_s)},
     \end{equation*} where
     $S$ is the number of items, $NC_s$ is the number of correct responses to $s^{th}$ item generated by a replicated dataset.
     
-    An additional posterior predictive p-value (PPP) can be defined to quantify the amount of replicated datasets that produced $\chi^2_{NC}$ values greater than the $\chi^2_{NC}$ of the observed dataset. PPP-values is given by:
+    An additional posterior predictive p-value (PPP) is be defined to quantify the amount of replicated datasets that produced $\chi^2_{NC}$ values greater than the $\chi^2_{NC}$ of the observed dataset. PPP-values is given by:
     \begin{equation*}
         PPP = p(\chi^2_{NC^{rep}} > \chi^2_{NC^{obs}})
     \end{equation*}
@@ -300,16 +300,16 @@ Comparing figure \ref{2pl_logit_raw_score} with \ref{2pl_ogive_raw_score}, one c
 
 Also, the chi square discrepancy test produces heavier tails with largely incorrect PPP values for logit 2PL model, as compared to normal ogive 2PL model (figure \ref{2pl_logit_chi_squar} vs \ref{2pl_ogive_chi_squar}).
 
-Thus, we can conclude from these test that for this dataset, using the normal ogive model provides a better fit to the data as compared to the logit model.
+Thus, we can conclude from these tests that for this dataset in particular, using the normal ogive model provides a better fit to the data as compared to the logit model.
 
 \subsubsection{Normal Ogive Multilevel 2PL vs Logit 2PL Multilevel model}
-Both models perform similar, and seem to provide a similar fit to the observed data (figures \ref{2pl_logit_mlirt_raw_score}, \ref{2pl_ogive_nc_mlirt_raw_score}, \ref{2pl_logit_mlirt_chi_squar}, and \ref{2pl_ogive_nc_mlirt_chi_squar}).
+There is no clear winner - both models perform similarly, and seem to provide an equivalent good(/bad) fit to the observed data (figures \ref{2pl_logit_mlirt_raw_score}, \ref{2pl_ogive_nc_mlirt_raw_score}, \ref{2pl_logit_mlirt_chi_squar}, and \ref{2pl_ogive_nc_mlirt_chi_squar}).
 
 \subsubsection{Normal Ogive Multilevel 2PL: Centered vs Non-centered Parametrization}
 
-As stated earlier \cite{furr2016two} suggests using non-centered parametrization for hierarchical models for better effective sample size. However, for normal ogive 2PL models, we found that the mean effective size for all parameters was more for centered parametrization as compared to non-centered parametrization (465 vs 447 with standard deviation of 148 vs 184 respectively).
+As stated earlier \cite{furr2016two} suggests using non-centered parametrization for hierarchical models for better effective sample size. However, for normal ogive 2PL hierarchical models, we found that the mean effective size for all parameters was more for centered parametrization as compared to non-centered parametrization (465 vs 447 with standard deviation of 148 vs 184 respectively).
 
-We found similar statistics for logit models as well, however, the stan documentations \cite{furr2016two} writes otherwise.
+We found similar statistics for logit 2PL hierarchical models as well, however, the stan documentations \cite{furr2016two} writes otherwise. There is a possibility of a bug in my normal ogive 2PL hierarchical Stan model implementation, but the implementation for logit 2PL hierarchical models used for this experiment is taken directly from \cite{furr2016two}.
 
 \subsection{Code Details}
 
@@ -318,6 +318,9 @@ The code for 2PL logit, 2PL multilevel Logit model, plotting violin plots, and c
 The code has been minimally modified to model and sample from normal ogive function.
 File twopl\_edstan\_mlirt\_l2\_ogive\_nc.stan contains the necessary changes.
 
+\subsection{Future Work}
+
+The decision to go with the Spelling dataset, instead of PISA 2003 dataset, which was originally the plan, was because of ease of use of the dataset. `mlirt' package \cite{fox2007multilevel}, being an old package (2007), had difficulty installing with new R versions and other dependent packages versions. However, the code to load PISA 2003 dataset has been extracted out. It took a lot of time to run a simple 2PL Stan model for the dataset (code included in zip). Thus, in future work, we can compare the normal ogive vs logit three-level IRT model fit fit to 2003 PISA dataset.
 
 \bibliographystyle{plain}
 \bibliography{references}
